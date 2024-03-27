@@ -1,0 +1,89 @@
+﻿@model EF_Registration.Models.Student
+
+@{
+    ViewData["Title"] = "Create";
+}
+<script>
+    $(document).ready(function () {
+        $('#StateListID').change(function () {
+            var id = $('#StateListID').val();
+            $('#DistrictID').empty().append("<option>Select District</option>");
+            $.post("GetDistrict", { ID: id }, function (data) {
+                $.each(data, function (i, vl) {
+                    $('#DistrictID').append("<option value=" + vl.districtID + ">" + vl.districtName + "</option>");
+                });
+
+            });
+        });
+    });
+</script>
+<h1>Add New Student</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MobileNo" class="control-label"></label>
+                <input asp-for="MobileNo" class="form-control" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailID" class="control-label"></label>
+                <input asp-for="EmailID" class="form-control" />
+                <span asp-validation-for="EmailID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StateListID" class="control-label"></label>
+                @Html.DropDownList("StateListID", new SelectList(Model.List_stateLists, "StateListID", "StateName"), "Select State", new { @class = "form-control" })
+                <span asp-validation-for="StateListID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DistrictID" class="control-label"></label>
+                @Html.DropDownList("DistrictID", new SelectList(Model.List_districts, "DistrictID", "DistrictName"), "Select District", new { @class = "form-control" })
+                <span asp-validation-for="DistrictID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentImg" class="control-label"></label>
+                <input type="file" asp-for="StudentImg" class="form-control" />
+                <span asp-validation-for="StudentImg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+</div>
+<label class="text-danger">
+    @if (ViewBag.error != null)
+    {
+
+        @ViewBag.error
+    }
+
+</label>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

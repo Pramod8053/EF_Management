@@ -1,0 +1,102 @@
+﻿@model EF_Registration.Models.Student
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>Edit Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+               
+                <input asp-for="StudentID" class="form-control" type="hidden"/>
+             
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MobileNo" class="control-label"></label>
+                <input asp-for="MobileNo" class="form-control" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailID" class="control-label"></label>
+                <input asp-for="EmailID" class="form-control" />
+                <span asp-validation-for="EmailID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StateListID" class="control-label"></label>
+                @Html.DropDownList("StateListID", new SelectList(Model.List_stateLists, "StateListID", "StateName"), "Select State", new { @class = "form-control" })
+                <span asp-validation-for="StateListID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DistrictID" class="control-label"></label>
+                @Html.DropDownList("DistrictID", new SelectList(Model.List_districts, "DistrictID", "DistrictName"), "Select District", new { @class = "form-control" })
+                <span asp-validation-for="DistrictID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentImg" class="control-label"></label>
+                <input asp-for="StudentImg" class="form-control" type="file"/>
+                <span asp-validation-for="StudentImg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<label class="text-danger">
+    @if(ViewBag.error != null)
+    {
+
+        @ViewBag.error
+    }
+
+</label>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#StateListID').change(function () {
+            var id = $('#StateListID').val();
+          
+            $('#DistrictID').empty().append("<option>Select District</option>");
+            $.ajax({
+                url: '/Home/GetDistrict', // Controller and action method URL
+                type: 'POST', // HTTP method (GET, POST, etc.)
+                data: { id: id }, // Data to send to the server
+                success: function (response) {
+                    // Handle the successful response from the server
+                    $.each(response, function (i, vl) {
+                        $('#DistrictID').append("<option value=" + vl.districtID + ">" + vl.districtName + "</option>");
+                    }); // Output the response to console
+                    // You can update UI elements or perform other actions based on the response
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors
+                    console.error(xhr.responseText); // Log the error response
+                }
+            });
+        });
+    });
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
