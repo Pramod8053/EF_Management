@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ProjectManagement.Models.ProjectType>
+
+@{
+    ViewData["Title"] = "Type";
+}
+
+<h1>Type</h1>
+
+<p>
+    <form method="post" asp-action="TypeAdd">
+        <table class="table">
+            <tr>
+                <th>Project Type Name</th>
+                <td>
+                    <input type="text" name="TypeName" required />
+                </td>
+                <td>
+                    <input type="submit" value="Add Type" />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</p>
+@if(TempData["msg"] != null) { 
+    <label>
+        @TempData["msg"].ToString()
+    </label>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectTypeID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectTypeID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeName)
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>

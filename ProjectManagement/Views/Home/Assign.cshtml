@@ -1,0 +1,187 @@
+﻿@model ProjectManagement.Models.Project
+
+@{
+    ViewData["Title"] = "Assign Project";
+}
+
+<div>
+    <h4> <a asp-action="Index">Project :</a> @Model.Name </h4>
+    <hr />
+    <form method="post">
+        <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ProjectTypeID)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.TypeName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Client)
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DisplayFor(model => model.Client)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-4">
+                @Model.StartDate.ToString("dd MMM yyyy")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="col-sm-4">
+                @Model.EndDate.ToString("dd MMM yyyy")
+            </dd>
+            <dt class="col-sm-2">
+                Tasks
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DropDownList("ProjectTaskID", new SelectList(Model.List_ProjectTask, "ProjectTaskID", "TaskName"), "Select List", new { @class = "form-control" })
+            </dd>
+            <dt class="col-sm-2">
+                Resources
+            </dt>
+            <dd class="col-sm-4">
+                @Html.DropDownList("ResourceAssignID", new SelectList(Model.List_ResourceAssign, "ResourceAssignID", "Name"), "Select List", new { @class = "form-control" })
+            </dd>
+            <dt class="col-sm-2">
+                Assign Date
+            </dt>
+            <dd class="col-sm-4">
+                <input type="date" name="AssignDate" required class="form-control" />
+            </dd>
+            <dt class="col-sm-2">
+                Assign Time
+            </dt>
+            <dd class="col-sm-4">
+                <input type="number" name="AssignTime" max="24" min="1" required class="form-control" />
+            </dd>
+            <dt class="col-sm-12 text-right">
+                <input type="submit" value="Assign to Resource" />
+            </dt>
+
+        </dl>
+    </form>
+    <h3 class="col-sm-12 text-center">Task Assign into Resource</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sl.</th>
+                <th>Task</th>
+                <th>Resource</th>
+                <th>Assign Date</th>
+                <th>Assign Time</th>
+                <th>Actual Time</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.List_TaskAssignResource)
+            {
+                <tr>
+                    <td>
+                        @{var f = Model.List_TaskAssignResource.IndexOf(item) + 1;}
+                        @f
+                    </td>
+                    <td>
+                        @item.TaskName
+                    </td>
+                    <td>
+                        @item.ResourceName
+                    </td>
+                    <td>
+                        @item.AssignDate.ToString("dd MMM yyyy")
+                    </td>
+                    <td>
+                        @item.AssignTime
+                    </td>
+                    <td>
+                        @item.ActualTime
+                    </td>
+                    <td>
+                        @if (item.status == 0)
+                        {
+                            <p class="text-primary">Pending</p>
+                        }
+                        else if (item.status == 1)
+                        {
+
+
+                            <p class="text-danger">Working</p>
+                        }
+                        else
+                        {
+                            <p class="text-secondary">Completed</p>
+                        }
+                    </td>
+                    <td>
+                        @if (item.status == 2)
+                        {
+                            <button class="btn-primary" disabled>Updated</button>
+                        }
+                        else
+                        {
+                            <button class="btn-primary" data-toggle="modal" data-target="#TaskModal" onclick="AssigID('@item.TaskAssignResourceID')">Updated</button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<!-- Modal Task add-->
+<div class="modal fade" id="TaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form method="post" asp-action="SaveActualTaskWork">
+                <div class="modal-body">
+                    <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+                    <input type="hidden" name="TaskAssignResourceID" id="txt_TaskAssignResourceID"/>
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            Status
+                        </dt>
+                        <dd class="col-sm-4">
+                            <select class="form-control" name="status" required>
+                                <option>Select</option>
+                                <option value="1">Working</option>
+                                <option value="2">Completed</option>
+                            </select>
+                        </dd>
+                        <dt class="col-sm-2">
+                            Time Taken
+                        </dt>
+                        <dd class="col-sm-4">
+                            <input type="number" name="TimeTaken" required class="form-control" />
+                        </dd>
+
+                    </dl>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function AssigID(id) {
+        $('#txt_TaskAssignResourceID').val(id);
+    }
+</script>

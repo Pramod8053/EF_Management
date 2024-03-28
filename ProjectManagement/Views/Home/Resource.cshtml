@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ProjectManagement.Models.Resource>
+
+@{
+    ViewData["Title"] = "Resource";
+}
+
+<h1>Resource</h1>
+
+<p>
+   <form method="post">
+       <dl class="row">
+           <dd class="col-sm-2">
+               Name
+           </dd>
+           <dd class="col-sm-2">
+               <input type="text" name="Name" required class="form-control" autocomplete="off"/>
+           </dd>
+           <dd class="col-sm-2">
+               Email
+           </dd>
+           <dd class="col-sm-2">
+               <input type="email" name="Email" required class="form-control" autocomplete="off"/>
+           </dd>
+           <dd class="col-sm-2">
+               Mobile
+           </dd>
+           <dd class="col-sm-2">
+               <input type="text" name="Mobile" required  class="form-control" autocomplete="off"/>
+           </dd>
+           <dd class="col-sm-2">
+               Designation
+           </dd>
+           <dd class="col-sm-2">
+               <input type="text" name="Designation" required  class="form-control" autocomplete="off"/>
+           </dd>
+           <dd class="col-sm-2">
+               <input type="submit" value="Add Resource" />
+           </dd>
+       </dl>
+   </form>
+</p>
+<div class="text-center">
+    @if (TempData["msg"] != null)
+    {
+        <label class="text-danger">
+            @TempData["msg"].ToString()
+        </label>
+    }
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ResourceID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designation)
+            </th>
+          
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ResourceID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Designation)
+                </td>
+               
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,235 @@
+﻿@model ProjectManagement.Models.Project
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div>
+    <h4> <a asp-action="Index">Project:</a>@Html.DisplayFor(model => model.Name)</h4>
+    <hr />
+    @if (TempData["msg"] != null)
+    {
+        <label class="text-danger">
+            @TempData["msg"].ToString()
+        </label>
+    }
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectTypeID)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.TypeName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Client)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.Client)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-4">
+            @Model.StartDate.ToString("dd MMM yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-4">
+            @Model.EndDate.ToString("dd MMM yyyy")
+        </dd>
+
+    </dl>
+    <h3>Task List</h3>
+    <hr>
+
+    <div class="text-right">
+        <button class="btn-outline-primary" data-toggle="modal" data-target="#TaskModal">Add Task</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Sl.
+                </th>
+                <th>
+                    Task Name
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var itemT in Model.List_ProjectTask)
+            {
+                <tr>
+                    <td>
+                        @{ var x = Model.List_ProjectTask.IndexOf(itemT) + 1;
+                        }
+                        @x
+                    </td>
+                    <td>
+                        @itemT.TaskName
+                    </td>
+                    <td>
+                        @itemT.StartDate.ToString("dd MMM yyyy")
+                    </td>
+                    <td>
+                        @itemT.EndDate.ToString("dd MMM yyyy")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h3>Assign Resources</h3>
+    <hr>
+    <div class="text-right">
+        <button class="btn-outline-secondary" data-toggle="modal" data-target="#AssignModal">Add Resource</button> 
+        <a class="btn-outline-secondary" asp-action="Assign" asp-route-id="@Model.ProjectID">Assign</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Sl.
+                </th>
+                <th>
+                    Resource Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Mobile No.
+                </th>
+                <th>
+                    Designation
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var item in Model.List_ResourceAssign)
+            {
+                <tr>
+                    <td>
+                        @{var y = Model.List_ResourceAssign.IndexOf(item) + 1;
+                        }
+                        @y
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        @item.Mobile
+                    </td>
+                    <td>
+                        @item.Designation
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Task add-->
+<div class="modal fade" id="TaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form method="post" asp-action="AddTask">
+                <div class="modal-body">
+                    <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+                    <dl class="row">
+                        <dt class="col-sm-6">
+                            Task Name
+                        </dt>
+                        <dd class="col-sm-6">
+                            <input type="text" name="TaskName" required class="form-control" />
+                        </dd>
+                        <dt class="col-sm-2">
+                            Start Date
+                        </dt>
+                        <dd class="col-sm-4">
+                            <input type="date" name="StartDate" required class="form-control" />
+                        </dd>
+                        <dt class="col-sm-2">
+                            End Date
+                        </dt>
+                        <dd class="col-sm-4">
+                            <input type="date" name="EndDate" required class="form-control" />
+                        </dd>
+                    </dl>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Assign resource add-->
+<div class="modal fade" id="AssignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form method="post" asp-action="AssignResource">
+                <div class="modal-body">
+                    <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+
+                    @foreach (var item in Model.List_ResourceNotAssign)
+                    {
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" asp-for="List_ResourceNotAssign[Model.List_ResourceNotAssign.IndexOf(item)].Status" />
+                                    <input type="hidden" asp-for="List_ResourceNotAssign[Model.List_ResourceNotAssign.IndexOf(item)].ResourceID" 
+                                           value="@item.ResourceID"/>
+                                    
+                                </td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Designation 
+                                </td>
+                            </tr>
+                        </table>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
