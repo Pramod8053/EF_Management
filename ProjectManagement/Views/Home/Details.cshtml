@@ -6,12 +6,15 @@
 <div>
     <h4> <a asp-action="Index">Project:</a>@Html.DisplayFor(model => model.Name)</h4>
     <hr />
-    @if (TempData["msg"] != null)
-    {
-        <label class="text-danger">
-            @TempData["msg"].ToString()
-        </label>
-    }
+    <div class="text-center">
+        @if (TempData["msg"] != null)
+        {
+            <label class="text-danger">
+                @TempData["msg"].ToString()
+            </label>
+        }
+    </div>
+   
     <dl class="row">
 
         <dt class="col-sm-2">
@@ -40,11 +43,14 @@
         </dd>
 
     </dl>
+    <div class="text-center">
+            <a class="btn btn-outline-secondary" asp-action="Report" asp-route-id="@Model.ProjectID">Report</a>
+    </div>
     <h3>Task List</h3>
     <hr>
 
     <div class="text-right">
-        <button class="btn-outline-primary" data-toggle="modal" data-target="#TaskModal">Add Task</button>
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#TaskModal">Add Task</button>
     </div>
     <table class="table">
         <thead>
@@ -54,6 +60,9 @@
                 </th>
                 <th>
                     Task Name
+                </th>
+                <th>
+                    Time(hr)
                 </th>
                 <th>
                     Start Date
@@ -77,6 +86,9 @@
                         @itemT.TaskName
                     </td>
                     <td>
+                        @itemT.TaskTime 
+                    </td>
+                    <td>
                         @itemT.StartDate.ToString("dd MMM yyyy")
                     </td>
                     <td>
@@ -89,8 +101,8 @@
     <h3>Assign Resources</h3>
     <hr>
     <div class="text-right">
-        <button class="btn-outline-secondary" data-toggle="modal" data-target="#AssignModal">Add Resource</button> 
-        <a class="btn-outline-secondary" asp-action="Assign" asp-route-id="@Model.ProjectID">Assign</a>
+        <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#AssignModal">Add Resource</button> 
+        <a class="btn btn-outline-secondary" asp-action="Assign" asp-route-id="@Model.ProjectID">Assign</a>
     </div>
     <table class="table">
         <thead>
@@ -157,20 +169,24 @@
                 <div class="modal-body">
                     <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
                     <dl class="row">
-                        <dt class="col-sm-6">
-                            Task Name
+                        <dt class="col-sm-2">
+                            Name
                         </dt>
-                        <dd class="col-sm-6">
-                            <input type="text" name="TaskName" required class="form-control" />
+                        <dd class="col-sm-4">
+                            <input type="text" name="TaskName" placeholder="Task Name" required class="form-control" />
+                        </dd>
+                        <dt class="col-sm-2">Time(hr)</dt>
+                        <dd class="col-sm-4">
+                            <input type="number" name="TaskTime" class="form-control" required/>
                         </dd>
                         <dt class="col-sm-2">
-                            Start Date
+                            Start
                         </dt>
                         <dd class="col-sm-4">
                             <input type="date" name="StartDate" required class="form-control" />
                         </dd>
                         <dt class="col-sm-2">
-                            End Date
+                            End
                         </dt>
                         <dd class="col-sm-4">
                             <input type="date" name="EndDate" required class="form-control" />
@@ -192,7 +208,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Task</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Resource</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -205,7 +221,7 @@
 
                     @foreach (var item in Model.List_ResourceNotAssign)
                     {
-                        <table class="table">
+                        <table class="table border-top-0">
                             <tr>
                                 <td>
                                     <input type="checkbox" asp-for="List_ResourceNotAssign[Model.List_ResourceNotAssign.IndexOf(item)].Status" />

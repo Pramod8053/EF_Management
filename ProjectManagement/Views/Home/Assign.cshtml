@@ -5,7 +5,14 @@
 }
 
 <div>
-    <h4> <a asp-action="Index">Project :</a> @Model.Name </h4>
+    <dl class="row">
+        <dt class="col-sm-8">
+            <a asp-action="Index">Project:</a>@Model.Name
+        </dt>
+        <dd class="col-sm-4 text-right">
+            <a asp-action="Details" asp-route-id="@Model.ProjectID">Back</a>
+        </dd>
+    </dl>
     <hr />
     <form method="post">
         <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
@@ -39,13 +46,13 @@
                 Tasks
             </dt>
             <dd class="col-sm-4">
-                @Html.DropDownList("ProjectTaskID", new SelectList(Model.List_ProjectTask, "ProjectTaskID", "TaskName"), "Select List", new { @class = "form-control" })
+                @Html.DropDownList("ProjectTaskID", new SelectList(Model.List_ProjectTask, "ProjectTaskID", "TaskName"), "Select List", new { @class = "form-control", @required = "required" })
             </dd>
             <dt class="col-sm-2">
                 Resources
             </dt>
             <dd class="col-sm-4">
-                @Html.DropDownList("ResourceAssignID", new SelectList(Model.List_ResourceAssign, "ResourceAssignID", "Name"), "Select List", new { @class = "form-control" })
+                @Html.DropDownList("ResourceAssignID", new SelectList(Model.List_ResourceAssign, "ResourceAssignID", "Name"), "Select List", new { @class = "form-control", @required = "required" })
             </dd>
             <dt class="col-sm-2">
                 Assign Date
@@ -73,13 +80,14 @@
                 <th>Task</th>
                 <th>Resource</th>
                 <th>Assign Date</th>
-                <th>Assign Time</th>
-                <th>Actual Time</th>
+                <th>Assign Time(hr)</th>
+                <th>Actual Time(hr)</th>
+                <th>Assign-Actual Time(hr)</th>
                 <th>Status</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody  class="text-center">
             @foreach (var item in Model.List_TaskAssignResource)
             {
                 <tr>
@@ -103,6 +111,36 @@
                         @item.ActualTime
                     </td>
                     <td>
+                        @{
+                            var diff = item.AssignTime - item.ActualTime;
+                        }
+                        @if (diff > 0)
+                        {
+                            if (item.status == 2)
+                            {
+                                <label class="text-info">@diff hrs Save</label>
+                            }
+                            else if (item.ActualTime != 0)
+                            {
+                                <label class="text-dark">@diff hrs Require</label>
+                            }
+                            else
+                            {
+                                <label>--</label>
+                            }
+
+                        }
+                        else if (diff == 0)
+                        {
+                            <label class="text-primary">On time</label>
+                        }
+                        else
+                        {
+                            <label class="text-danger">@diff hrs Delay</label>
+                        }
+
+                    </td>
+                    <td>
                         @if (item.status == 0)
                         {
                             <p class="text-primary">Pending</p>
@@ -121,11 +159,11 @@
                     <td>
                         @if (item.status == 2)
                         {
-                            <button class="btn-primary" disabled>Updated</button>
+                            <button class="btn-outline-primary" disabled>Updated</button>
                         }
                         else
                         {
-                            <button class="btn-primary" data-toggle="modal" data-target="#TaskModal" onclick="AssigID('@item.TaskAssignResourceID')">Updated</button>
+                            <button class="btn-primary" data-toggle="modal" data-target="#TaskModal" onclick="AssigID('@item.TaskAssignResourceID','@item.ProjectTaskID')">Updated</button>
                         }
 
                     </td>
@@ -149,7 +187,8 @@
             <form method="post" asp-action="SaveActualTaskWork">
                 <div class="modal-body">
                     <input type="hidden" name="ProjectID" value="@Model.ProjectID" />
-                    <input type="hidden" name="TaskAssignResourceID" id="txt_TaskAssignResourceID"/>
+                    <input type="hidden" name="ProjectTaskID"  id="txt_ProjectTaskID"/>
+                    <input type="hidden" name="TaskAssignResourceID" id="txt_TaskAssignResourceID" />
                     <dl class="row">
                         <dt class="col-sm-2">
                             Status
@@ -181,7 +220,8 @@
     </div>
 </div>
 <script>
-    function AssigID(id) {
+    function AssigID(id, ProjectTaskID) {
         $('#txt_TaskAssignResourceID').val(id);
+        $('#txt_ProjectTaskID').val(ProjectTaskID);
     }
 </script>

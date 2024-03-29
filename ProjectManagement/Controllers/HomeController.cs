@@ -125,6 +125,11 @@ namespace ProjectManagement.Controllers
           
             return RedirectToAction("Assign",new {id=_atw.ProjectID });
         }
+        public IActionResult Report(int id)
+        {
+            Project _obj = GetProjectByID(id);
+            return View(_obj);
+        }
             public IActionResult Privacy()
         {
             return View();

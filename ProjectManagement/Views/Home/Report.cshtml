@@ -1,0 +1,135 @@
+﻿@model ProjectManagement.Models.Project
+
+@{
+    ViewData["Title"] = "Report";
+}
+<div>
+    <dl class="row">
+        <dt class="col-sm-8">
+            <a asp-action="Index">Project:</a>@Model.Name
+        </dt>
+        <dd class="col-sm-4 text-right">
+            <a asp-action="Details" asp-route-id="@Model.ProjectID">Back</a>
+        </dd>
+    </dl>
+    
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectTypeID)
+        </dt>
+        <dd class="col-sm-3">
+            @Html.DisplayFor(model => model.TypeName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Client)
+        </dt>
+        <dd class="col-sm-4">
+            @Html.DisplayFor(model => model.Client)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-3">
+            @Model.StartDate.ToString("dd MMM yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-2">
+            @Model.EndDate.ToString("dd MMM yyyy")
+        </dd>
+        <dt class="col-sm-1">
+           Status
+        </dt>
+        <dd class="col-sm-1">
+            @if (Model.List_ProjectTask.FindAll(x => x.status == 2).Count == Model.List_ProjectTask.Count && Model.List_ProjectTask.Count!=0)
+            {
+                <p class="text-secondary">Completed</p>
+            }
+            else if (Model.List_ProjectTask.FindAll(x => x.status == 1).Count > 0 && Model.List_ProjectTask.FindAll(x => x.status == 1).Count < Model.List_ProjectTask.Count)
+            {
+
+                <p class="text-danger">Progress</p>
+            }
+            else
+            {
+                <p class="text-primary">Pending</p>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <h4>
+        Task List
+    </h4>    <hr />
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th>SlNo.</th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Start
+                </th>
+                <th>End</th>
+                <th>
+                    Milestone Time
+                </th>
+                <th>
+                    Time Taken
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.List_ProjectTask)
+            {
+            <tr>
+                <td>
+                    @{var x = Model.List_ProjectTask.IndexOf(item) + 1;
+                    }
+                    @x
+                </td>
+                <td>
+                    @item.TaskName
+                </td>
+                <td>
+                    @item.StartDate.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @item.EndDate.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @item.TaskTime  
+                </td>
+                <td>
+                    @item.ActualTime  
+                </td>
+                <td>
+                
+                    @if (item.status == 0)
+                    {
+                        <p class="text-primary">Pending</p>
+                    }
+                    else if (item.status == 1)
+                    {
+
+
+                        <p class="text-danger">Working</p>
+                    }
+                    else
+                    {
+                        <p class="text-secondary">Completed</p>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+   
+</div>

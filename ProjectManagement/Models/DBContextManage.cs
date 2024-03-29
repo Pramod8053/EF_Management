@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagement.Models
 {
-    public class DBContextManagessssa:DbContext
+    public class DBContextManagessssaar:DbContext
     {
         public DbSet<ProjectType> projectTypes { get; set; }
         public DbSet<Project> project { get; set; }

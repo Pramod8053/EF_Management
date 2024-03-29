@@ -8,9 +8,9 @@ namespace ProjectManagement.Repositories
 {
     public class ProjectRepo :IProjectRepo
     {
-        private readonly DBContextManagessssa _dbcontext;
+        private readonly DBContextManagessssaar _dbcontext;
         public ProjectRepo() {
-            _dbcontext = new DBContextManagessssa();
+            _dbcontext = new DBContextManagessssaar();
         }
 
         public string AddResource(Resource _obj)
@@ -38,7 +38,7 @@ namespace ProjectManagement.Repositories
         {
             try
             {
-                if(_dbcontext.projectTasks.ToList().FindAll(x=>x.TaskName == _task.TaskName).Count > 0)
+                if(_dbcontext.projectTasks.ToList().FindAll(x=>x.TaskName == _task.TaskName && x.ProjectID==_task.ProjectID).Count > 0)
                 {
                     return "Task exists";
                 }
@@ -79,7 +79,45 @@ namespace ProjectManagement.Repositories
 
         public List<ProjectTask> GetProjectTask()
         {
-            return _dbcontext.projectTasks.ToList();
+            var projectT = from pt in _dbcontext.projectTasks.ToList()
+                           join tar in _dbcontext.taskAssignResources.ToList() on pt.ProjectTaskID equals tar.ProjectTaskID into tarGroup
+                           from ta in tarGroup.DefaultIfEmpty()
+                            select new 
+                           {
+                               ProjectID = pt.ProjectID,
+                               ProjectTaskID = pt.ProjectTaskID,
+                               TaskName = pt.TaskName,
+                               StartDate = pt.StartDate,
+                               EndDate = pt.EndDate,
+                               TaskTime = pt.TaskTime,
+                               ActualTime = pt.ActualTime,
+                               status = pt.status,
+                               TaskAssignResourceID = (ta != null) ? ta.TaskAssignResourceID : 0,
+
+                           };
+            var ActualTaskTime = _dbcontext.actualTaskWorks.ToList();
+            var projectTasklist = from prot in projectT.ToList()
+                                  join atw in _dbcontext.actualTaskWorks.ToList() on prot.TaskAssignResourceID equals atw.TaskAssignResourceID into atwGroup
+                                  from at in atwGroup.DefaultIfEmpty()
+                                  group new { prot, at }
+                                  by new { prot.ProjectID, prot.ProjectTaskID, prot.TaskName, prot.StartDate, prot.EndDate, prot.TaskTime } into grouped
+                                  select new ProjectTask
+                                  {
+                                      ProjectID = grouped.Key.ProjectID,
+                                      ProjectTaskID = grouped.Key.ProjectTaskID,
+                                      TaskName = grouped.Key.TaskName,
+                                      StartDate = grouped.Key.StartDate,
+                                      EndDate = grouped.Key.EndDate,
+                                      TaskTime = grouped.Key.TaskTime,
+                                      ActualTime = grouped.Sum(x => x.at != null ? x.at.TimeTaken : 0), // Calculate sum of ActualTime each group,
+                                status = (_dbcontext.taskAssignResources.ToList().FindAll(x=> x.ProjectTaskID == grouped.Key.ProjectTaskID).Count==
+                                ActualTaskTime.FindAll(y => y.ProjectTaskID == grouped.Key.ProjectTaskID && y.status==2).Count
+                                && _dbcontext.taskAssignResources.ToList().FindAll(x => x.ProjectTaskID == grouped.Key.ProjectTaskID).Count>0 ? 2 :1) //grouped.Max(x=>x.at!=null?x.at.status:0),
+
+                                  };
+
+          //  _dbcontext.taskAssignResources.ToList().FindAll(x => x.ProjectTaskID == grouped.Key.ProjectTaskID).Count == 0 ? 0 : 1
+            return projectTasklist.ToList();
         }
 
         public List<ProjectType> GetProjectTypelst()
@@ -206,6 +244,7 @@ namespace ProjectManagement.Repositories
                               select new TaskAssignResource
                               {
                                   TaskAssignResourceID = tar.TaskAssignResourceID,
+                                  ProjectTaskID = tar.ProjectTaskID,
                                   AssignDate = tar.AssignDate,
                                   AssignTime = tar.AssignTime,
                                   ActualTime = _dbcontext.actualTaskWorks.ToList().FindAll(x=>x.TaskAssignResourceID== tar.TaskAssignResourceID).Sum(k=>k.TimeTaken),

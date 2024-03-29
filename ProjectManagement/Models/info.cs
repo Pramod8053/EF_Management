@@ -73,8 +73,11 @@ namespace ProjectManagement.Models
         public int TaskAssignResourceID { get; set; }
         public int TimeTaken { get; set; }
         public int status { get; set; } //0- pending 1- working 2-completed
+        public int ProjectTaskID { get; set; }
         [NotMapped]
         public int ProjectID { get; set; }
+       
+       
     }
     public class ProjectType
     {
@@ -112,5 +115,10 @@ namespace ProjectManagement.Models
         [Required]
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
+        public int TaskTime { get; set; }
+        [NotMapped]
+        public int ActualTime { get; set; }
+        [NotMapped]
+        public int status { get; set; }
     }
 }

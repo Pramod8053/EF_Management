@@ -3,14 +3,17 @@
 @{
     ViewData["Title"] = "Project Management";
 }
-@if (TempData["msg"] != null)
-{
-    <label class="text-danger">
-        @TempData["msg"].ToString()
-    </label>
-}
+<div class="text-center">
+    @if (TempData["msg"] != null)
+    {
+        <label class="text-danger">
+            @TempData["msg"].ToString()
+        </label>
+    }
+</div>
+
 <p class="text-right">
-    <a asp-action="Create">Add new Project</a>
+    <a asp-action="Create" class="btn btn-outline-primary">Add new Project</a>
 </p>
 <table class="table">
     <thead>
@@ -62,7 +65,7 @@
 
                 <td>
 
-                    @Html.ActionLink("Details", "Details", new { id = item.ProjectID })
+                    @Html.ActionLink("Details", "Details", new { id = item.ProjectID },new { @class="btn btn-primary" })
 
                 </td>
             </tr>
