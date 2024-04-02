@@ -22,5 +22,6 @@ namespace ProjectManagement.Repositories
         string SaveTaskAssignToResource(TaskAssignResource _obj);
         List<TaskAssignResource> GetTaskAssignResources(int ProjectID);
         string SaveActualTaskWork(ActualTaskWork _obj);
+        List<ActualTaskWork> GetActualTaskWorksReport(int ProjectID);
     }
 }

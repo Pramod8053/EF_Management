@@ -35,7 +35,8 @@ namespace ProjectManagement.Models
         public List<Resource> List_ResourceNotAssign { get; set; }
         public List<Resource> List_ResourceAssign { get; set; }
         public List<TaskAssignResource> List_TaskAssignResource { get; set; }
-
+        [NotMapped]
+        public List<ActualTaskWork> List_actualTaskWorks { get; set; } 
 
     }
     public class ResourceAssign
@@ -76,6 +77,10 @@ namespace ProjectManagement.Models
         public int ProjectTaskID { get; set; }
         [NotMapped]
         public int ProjectID { get; set; }
+        [NotMapped]
+        public string ResourceName { get; set; }
+        [NotMapped]
+        public string TaskName { get; set; }
        
        
     }
@@ -120,5 +125,10 @@ namespace ProjectManagement.Models
         public int ActualTime { get; set; }
         [NotMapped]
         public int status { get; set; }
+    }
+    public class ErrorResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
     }
 }

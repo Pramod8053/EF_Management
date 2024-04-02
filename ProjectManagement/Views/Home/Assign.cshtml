@@ -10,7 +10,7 @@
             <a asp-action="Index">Project:</a>@Model.Name
         </dt>
         <dd class="col-sm-4 text-right">
-            <a asp-action="Details" asp-route-id="@Model.ProjectID">Back</a>
+            <a asp-action="Details" asp-route-id="@Model.ProjectID" class="btn btn-primary">Back</a>
         </dd>
     </dl>
     <hr />
@@ -72,6 +72,14 @@
 
         </dl>
     </form>
+    <div class="text-center">
+        @if (TempData["msg"] != null)
+        {
+            <label class="text-danger">
+                @TempData["msg"].ToString()
+            </label>
+        }
+    </div>
     <h3 class="col-sm-12 text-center">Task Assign into Resource</h3>
     <table class="table">
         <thead>
@@ -87,7 +95,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody  class="text-center">
+        <tbody class="text-center">
             @foreach (var item in Model.List_TaskAssignResource)
             {
                 <tr>

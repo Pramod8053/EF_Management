@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectManagement.Models;
 using ProjectManagement.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ProjectManagement.Controllers
 {
@@ -19,18 +22,56 @@ namespace ProjectManagement.Controllers
             _logger = logger;
             _repo = repo;
         }
+        public IActionResult loging()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult loging(string email,string password)
+        {
+           if(email=="admin@gmail.com" && password == "123")
+            { // Set session value
+                HttpContext.Session.SetString("UserName", email);
 
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, email),
+                        // Add more claims as needed
+                    };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.error = "Check the Username and Password!!!";
+            }
+            return View();
+        }
+        public IActionResult logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+
+            return RedirectToAction("loging");
+        }
+        [Authorize]
         public IActionResult Index()
         {
-
+            _logger.LogInformation("Project Started");
             return View(_repo.GetProjectlst());
         }
+        [Authorize]
         public IActionResult Create()
         {
             Project _pro = new Project();
             _pro.List_ProjectType = _repo.GetProjectTypelst();
             return View(_pro);
         }
+        [Authorize]
         [HttpPost]
         public IActionResult Create(Project pro)
         {
@@ -46,10 +87,12 @@ namespace ProjectManagement.Controllers
             }
             return RedirectToAction("Index");
         }
-            public IActionResult Type()
+        [Authorize]
+        public IActionResult Type()
         {
             return View(_repo.GetProjectTypelst());
         }
+        [Authorize]
         [HttpPost]
         public IActionResult TypeAdd(ProjectType _type)
         {
@@ -92,6 +135,7 @@ namespace ProjectManagement.Controllers
             _obj.List_ResourceAssign = _repo.GetResourceAssigns(id);
             _obj.List_ResourceNotAssign = _repo.GetResourceNotAssigns(id);
             _obj.List_TaskAssignResource = _repo.GetTaskAssignResources(id);
+            _obj.List_actualTaskWorks = _repo.GetActualTaskWorksReport(id);
             return _obj;
         }
         [HttpPost]

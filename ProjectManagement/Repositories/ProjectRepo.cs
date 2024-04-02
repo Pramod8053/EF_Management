@@ -1,4 +1,5 @@
-﻿using ProjectManagement.Models;
+﻿using Microsoft.Extensions.Logging;
+using ProjectManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,11 @@ namespace ProjectManagement.Repositories
 {
     public class ProjectRepo :IProjectRepo
     {
-        private readonly DBContextManagessssaar _dbcontext;
-        public ProjectRepo() {
-            _dbcontext = new DBContextManagessssaar();
+        private readonly DBContextManager _dbcontext;
+        private readonly ILogger<ProjectRepo> _logger;
+        public ProjectRepo(ILogger<ProjectRepo> logger) {
+            _dbcontext = new DBContextManager();
+            _logger = logger;
         }
 
         public string AddResource(Resource _obj)
@@ -27,9 +30,10 @@ namespace ProjectManagement.Repositories
                     _dbcontext.SaveChanges();
                     return "Resource Added";
                 }
-            }
-            catch(Exception ex)
+        }
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
         }
@@ -51,6 +55,7 @@ namespace ProjectManagement.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
         }
@@ -110,9 +115,9 @@ namespace ProjectManagement.Repositories
                                       EndDate = grouped.Key.EndDate,
                                       TaskTime = grouped.Key.TaskTime,
                                       ActualTime = grouped.Sum(x => x.at != null ? x.at.TimeTaken : 0), // Calculate sum of ActualTime each group,
-                                status = (_dbcontext.taskAssignResources.ToList().FindAll(x=> x.ProjectTaskID == grouped.Key.ProjectTaskID).Count==
-                                ActualTaskTime.FindAll(y => y.ProjectTaskID == grouped.Key.ProjectTaskID && y.status==2).Count
-                                && _dbcontext.taskAssignResources.ToList().FindAll(x => x.ProjectTaskID == grouped.Key.ProjectTaskID).Count>0 ? 2 :1) //grouped.Max(x=>x.at!=null?x.at.status:0),
+                                     status = (_dbcontext.taskAssignResources.ToList().FindAll(x=> x.ProjectTaskID == grouped.Key.ProjectTaskID).Count==
+                                      ActualTaskTime.FindAll(y => y.ProjectTaskID == grouped.Key.ProjectTaskID && y.status == 2).Count
+                                      && _dbcontext.taskAssignResources.ToList().FindAll(x => x.ProjectTaskID == grouped.Key.ProjectTaskID).Count > 0 ? 2 : ActualTaskTime.FindAll(y => y.ProjectTaskID == grouped.Key.ProjectTaskID && y.status == 1).Count > 0 ? 1 : 0) //grouped.Max(x=>x.at!=null?x.at.status:0),
 
                                   };
 
@@ -160,6 +165,7 @@ namespace ProjectManagement.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
         }
@@ -181,6 +187,7 @@ namespace ProjectManagement.Repositories
             }
            catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
          
@@ -199,6 +206,7 @@ namespace ProjectManagement.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
         }
@@ -224,12 +232,21 @@ namespace ProjectManagement.Repositories
         {
             try
             {
-                _dbcontext.taskAssignResources.Add(_obj);
-                _dbcontext.SaveChanges();
-                return "Assign the task...";
+                if (_dbcontext.taskAssignResources.ToList().FindAll(x => x.AssignDate.ToString("dd-MMM-yyyy") == _obj.AssignDate.ToString("dd-MMM-yyyy") && x.ProjectID == _obj.ProjectID && x.ResourceAssignID == _obj.ResourceAssignID && x.ProjectTaskID==_obj.ProjectTaskID).Count>0)
+                {
+                    return "Already Assign this task to resource";
+                }
+                else
+                {
+                    _dbcontext.taskAssignResources.Add(_obj);
+                    _dbcontext.SaveChanges();
+                    return "Assign the task...";
+                }
+               
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
         }
@@ -265,8 +282,29 @@ namespace ProjectManagement.Repositories
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return ex.Message;
             }
+        }
+
+        public List<ActualTaskWork> GetActualTaskWorksReport(int ProjectID)
+        {
+       
+            var MakeReport = from atw in _dbcontext.actualTaskWorks.ToList().FindAll(x => x.ProjectID == ProjectID)
+                             join tar in _dbcontext.taskAssignResources.ToList() on atw.TaskAssignResourceID equals tar.TaskAssignResourceID
+                             join ra in _dbcontext.resources.ToList() on tar.ResourceAssignID equals ra.ResourceAssignID
+                             join pt in _dbcontext.projectTasks.ToList() on atw.ProjectTaskID equals pt.ProjectTaskID
+                             select new ActualTaskWork
+                             {
+                                 ResourceName = ra.Name,
+                                 TaskName = pt.TaskName,
+                                 ActualTaskWorkID = atw.ActualTaskWorkID,
+                                 TimeTaken = atw.TimeTaken,
+                                 status = atw.status
+                             };
+            return MakeReport.ToList();
+
+
         }
     }
 }

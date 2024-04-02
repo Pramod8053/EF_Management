@@ -9,7 +9,7 @@
             <a asp-action="Index">Project:</a>@Model.Name
         </dt>
         <dd class="col-sm-4 text-right">
-            <a asp-action="Details" asp-route-id="@Model.ProjectID">Back</a>
+            <a asp-action="Details" asp-route-id="@Model.ProjectID"  class="btn btn-primary">Back</a>
         </dd>
     </dl>
     
@@ -111,7 +111,7 @@
                     @item.ActualTime  
                 </td>
                 <td>
-                
+                @item.status
                     @if (item.status == 0)
                     {
                         <p class="text-primary">Pending</p>
