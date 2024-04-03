@@ -33,7 +33,7 @@ namespace ProjectManagement
             services.AddSession(options =>
             {
                 // Set session timeout value (optional)
-                options.IdleTimeout = TimeSpan.FromMinutes(5); // Adjust as needed
+                options.IdleTimeout = TimeSpan.FromMinutes(1); // Adjust as needed
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true; // Important for GDPR compliance
             });
@@ -41,6 +41,7 @@ namespace ProjectManagement
               .AddCookie(options =>
               {
                   options.Cookie.Name = "ProjectManagementAuthCookie";
+                  options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                   options.LoginPath = "/home/Loging"; // Redirect to login page if unauthorized
                   options.AccessDeniedPath = "/home/Loging"; // Redirect if access denied
                 });
