@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 namespace ProjectManagement.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -22,10 +23,12 @@ namespace ProjectManagement.Controllers
             _logger = logger;
             _repo = repo;
         }
+        [AllowAnonymous]
         public IActionResult loging()
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult loging(string email,string password)
         {
@@ -58,20 +61,20 @@ namespace ProjectManagement.Controllers
 
             return RedirectToAction("loging");
         }
-        [Authorize]
+       
         public IActionResult Index()
         {
             _logger.LogInformation("Project Started");
             return View(_repo.GetProjectlst());
         }
-        [Authorize]
+      
         public IActionResult Create()
         {
             Project _pro = new Project();
             _pro.List_ProjectType = _repo.GetProjectTypelst();
             return View(_pro);
         }
-        [Authorize]
+      
         [HttpPost]
         public IActionResult Create(Project pro)
         {
@@ -87,12 +90,12 @@ namespace ProjectManagement.Controllers
             }
             return RedirectToAction("Index");
         }
-        [Authorize]
+      
         public IActionResult Type()
         {
             return View(_repo.GetProjectTypelst());
         }
-        [Authorize]
+      
         [HttpPost]
         public IActionResult TypeAdd(ProjectType _type)
         {

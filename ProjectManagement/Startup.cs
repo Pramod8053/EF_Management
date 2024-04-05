@@ -41,7 +41,7 @@ namespace ProjectManagement
               .AddCookie(options =>
               {
                   options.Cookie.Name = "ProjectManagementAuthCookie";
-                  options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                  options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
                   options.LoginPath = "/home/Loging"; // Redirect to login page if unauthorized
                   options.AccessDeniedPath = "/home/Loging"; // Redirect if access denied
                 });
