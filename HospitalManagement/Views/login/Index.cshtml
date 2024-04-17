@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "LogIn";
+}
+<link href="~/css/logincss.css" rel="stylesheet" />
+<body>
+    <header>
+        <h1>Hospital Management</h1>
+    </header>
+    <main>
+        <form id="login_form" class="form_class" asp-action="login" method="post">
+            <div class="form_div">
+                <label>Login:</label>
+                <input class="field_class" name="UserName" type="text" placeholder="User Name" autofocus value="Admin">
+                <label>Password:</label>
+                <input id="pass" class="field_class" name="PassWord" type="password" placeholder="Password" value="Admin123">
+                <button class="submit_class" type="submit">Login</button> @*onclick="return validarLogin()"*@
+            </div>
+            @*<div class="info_div">
+                <p>Ainda não é um usuário registrado? <a href="register/reg-form.php">Cadastre-se!</a></p>
+            </div>*@
+        </form>
+    </main>
+    <footer>
+        <p>Created by <u>Pramod Kumar Behera</u></p>
+    </footer>
+</body>
+<script>
+    const validarLogin = () => {
+        alert('Teste');
+    }
+</script>

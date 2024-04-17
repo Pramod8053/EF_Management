@@ -1,0 +1,36 @@
+﻿@model List<HospitalManagement.Entities.tblRoles>
+<h3>Roles List</h3>
+<hr />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Sl No.
+            </th>
+            <th>
+                Roles
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>
+                        @{ var x = Model.IndexOf(item) + 1;
+                        }
+                        @x
+                    </td>
+                   <td>
+                       @item.Roles 
+                   </td>
+                    <td>
+                        <a asp-controller="Home" asp-action="AssignThePages" asp-route-RollId="@item.Id">Assign the pages</a> 
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>

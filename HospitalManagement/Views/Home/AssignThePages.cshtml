@@ -1,0 +1,82 @@
+﻿@model HospitalManagement.Entities.tblRoles
+<h3>@Html.ActionLink("Assign the pages to User", "Roles", "Home")   : @Model.Roles</h3>
+<hr />
+<div class="text-center">
+   
+    <label class="bg-primary" id="msg">
+        @if (TempData["msg"] != null)
+        {
+            @TempData["msg"]
+        }
+    </label>
+    
+</div>
+
+
+<form method="post" asp-action="AssignThePages">
+    @{
+        var mainmenu = Model.List_SubMenuByRole.GroupBy(x => x.MainMenuName).ToList();
+        int indexNo = 0;
+    }
+    <input type="hidden" value="@Model.Id" name="Id" />
+    @foreach (var menu in mainmenu)
+    {
+        <h4>Menu : @menu.Key </h4>
+        <table class="table tab-pane">
+            <thead>
+                <tr>
+                    <th>Sl No.</th>
+                    <th>
+                        Sub Menu
+                    </th>
+                    <th>
+                        Controller
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                    <th>
+                        Select
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int submenuIndex = 1;
+
+                }
+                @foreach (var item in menu)
+                {
+
+                    <tr>
+                        <td>
+                            @submenuIndex
+                            <input type="hidden" value="@item.RoleID" asp-for="@Model.List_SubMenuByRole[indexNo].RoleID" />
+                            <input type="hidden" value="@item.SubMenuId" asp-for="@Model.List_SubMenuByRole[indexNo].SubMenuId" />
+                        </td>
+
+                        <td>
+                            @item.SubMenuName
+                        </td>
+                        <td>
+                            @item.Controller
+                        </td>
+                        <td>
+                            @item.Action
+                        </td>
+                        <td>
+                            <input type="checkbox" asp-for="@Model.List_SubMenuByRole[indexNo].Status" checked="@item.Status" />
+                        </td>
+                    </tr>
+                    submenuIndex++;
+                    indexNo++;
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="text-right">
+        <input type="submit" value="Assign" class="btn btn-primary" />
+    </div>
+
+</form>

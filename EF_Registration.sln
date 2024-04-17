@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.34601.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EF_Registration", "EF_Registration\EF_Registration.csproj", "{83615195-9C4D-4E98-94A9-095003CEB6E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement", "ProjectManagement\ProjectManagement.csproj", "{A9C601B4-3C4B-4245-8E09-BE513DBF12DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectManagement", "ProjectManagement\ProjectManagement.csproj", "{A9C601B4-3C4B-4245-8E09-BE513DBF12DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalManagement", "HospitalManagement\HospitalManagement.csproj", "{82BC8083-53D6-4A2C-80BB-4B9FAD9775E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A9C601B4-3C4B-4245-8E09-BE513DBF12DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9C601B4-3C4B-4245-8E09-BE513DBF12DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9C601B4-3C4B-4245-8E09-BE513DBF12DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82BC8083-53D6-4A2C-80BB-4B9FAD9775E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82BC8083-53D6-4A2C-80BB-4B9FAD9775E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82BC8083-53D6-4A2C-80BB-4B9FAD9775E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82BC8083-53D6-4A2C-80BB-4B9FAD9775E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

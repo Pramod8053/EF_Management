@@ -1,0 +1,135 @@
+﻿@model List<HospitalManagement.Entities.Doctor>
+<div class="row">
+    <div class="col"><h4>Doctor List</h4></div>
+    <div class="col text-right">
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Add New</button>
+    </div>
+</div>
+<div class="text-center">
+
+    <label class="text-primary bg-light" id="msg">@ViewBag.msg</label>
+</div>
+<hr />
+@{ var specialist = Model.GroupBy(x => x.SpecialistName); }
+@foreach(var itemName in specialist)
+            {
+<h4 class="text-center"><u>@itemName.Key</u></h4> 
+<table class="table tab-pane">
+    <thead>
+        <tr>
+            <th>
+                Sl No.
+            </th>
+            <th>
+                Doctor Name
+            </th>
+            <th>
+                Age
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Mobile No.
+            </th>
+            <th>
+                Address
+            </th>
+         
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in itemName)
+        {
+            <tr>
+                <td>
+                    @{var x = itemName.ToList().IndexOf(item) + 1;}
+                    @x
+                </td>
+                <td>
+                    @item.DoctorName 
+                </td>
+                <td>
+                    @item.Age 
+                </td>
+                <td>
+                    @item.GenderName 
+                </td>
+                <td>
+                    @item.Mobile 
+                </td>
+                <td>
+                    @item.Address  
+                </td>
+              
+                <td>
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal" onclick="GetDoctor(@item.Id)">Edit</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+                        }
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Doctor Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" asp-action="Doctor">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="hidden" id="txt_id" name="Id" value="0"/>
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9"><input type="text" id="txt_name" name="DoctorName" class="form-control" required /></dd>
+                        <dt class="col-sm-3">Age</dt>
+                        <dd class="col-sm-3"><input type="text" id="txt_age" name="Age" maxlength="2"  class="form-control w-75 numericInput" required /></dd>
+                        <dt class="col-sm-3">Gender</dt>
+                        <dd class="col-sm-3">
+                            @Html.DropDownList("GenderId",new SelectList(ViewBag.Gender,"Id", "Name"),"Select",new {@class= "form-control", @required = "required" }) 
+                       
+                        </dd>
+                        <dt class="col-sm-3">Specialist</dt>
+                        <dd class="col-sm-9">
+                            @Html.DropDownList("SpecialistId", new SelectList(ViewBag.Specialist, "Id", "Name"), "Select", new { @class = "form-control", @required = "required" })
+                        </dd>
+                        <dt class="col-sm-3">Mobile No.</dt>
+                        <dd class="col-sm-9"><input type="text" id="txt_mobile" name="Mobile" maxlength="10" class="form-control numericInput" required /></dd>
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9"><textarea type="text" id="txt_address" name="Address" class="form-control h-100" required></textarea></dd>
+                        <!-- Add more terms and descriptions as needed -->
+                    </dl>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function GetDoctor(id) {
+        $.post("GetDoctorByID", { ID: id }, function (data) {
+            $("#txt_id").val(data.id);
+            $("#txt_name").val(data.doctorName);
+            $("#txt_age").val(data.age);
+            $("#GenderId").val(data.genderId);
+            $("#SpecialistId").val(data.specialistId);
+            $("#txt_address").val(data.address);
+            $("#txt_mobile").val(data.mobile);
+
+        });
+    }
+</script>

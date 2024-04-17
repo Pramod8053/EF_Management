@@ -1,0 +1,83 @@
+﻿@model List<HospitalManagement.Entities.Specialist>
+<div class="row">
+    <div class="col"><h4>Sepcialist List</h4></div>
+    <div class="col text-right">
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Add New</button>
+    </div>
+</div>
+<div class="text-center">
+
+    <label class="text-primary bg-light" id="msg">@ViewBag.msg</label>
+</div>
+<hr />
+<table class="table tab-pane">
+    <thead>
+        <tr>
+            <th>
+                Sl No.
+            </th>
+            <th>
+                Specialist
+            </th>
+            <th>
+                Qualification
+            </th>
+            <th>
+                Doctor Count
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{var x = Model.IndexOf(item) + 1;}
+                    @x
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Qualification
+                </td>
+                <td>
+                    @item.DoctorCount 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Specialist Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" asp-action="Sepcialist">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Specialist</dt>
+                        <dd class="col-sm-9"><input type="text" name="Name" required /></dd>
+
+                        <dt class="col-sm-3">Qualification</dt>
+                        <dd class="col-sm-9"><input type="text" name="Qualification" required /></dd>
+
+                        <!-- Add more terms and descriptions as needed -->
+                    </dl>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
