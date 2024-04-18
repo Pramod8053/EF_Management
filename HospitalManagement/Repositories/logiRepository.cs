@@ -10,10 +10,10 @@ namespace HospitalManagement.Repositories
     public class logiRepository : IlogiRepository
     {
        
-        private readonly HMContextt _dbcontext;
+        private readonly HMContt _dbcontext;
         public logiRepository()
         {
-            _dbcontext =new HMContextt();
+            _dbcontext =new HMContt();
         }
         public List<tblLogin> GetLogin()
         {
@@ -27,6 +27,19 @@ namespace HospitalManagement.Repositories
                                     RoleId = login.RoleId ,
                                     RoleName = role.Roles 
                           }).ToList();
+            var doctorlst = _dbcontext.doctors.ToList();
+            var x = _tblLogins.Count;
+            foreach (var item in doctorlst)
+            {
+                x++;
+                tblLogin  _log = new tblLogin();
+                _log.Id = x;
+                _log.UserName = item.Email;
+                _log.PassWord = "123";
+                _log.RoleId = 4;
+                _log.RoleName = "Doctor";
+                _tblLogins.Add(_log);
+            }
             return _tblLogins;
         }
 
@@ -34,8 +47,9 @@ namespace HospitalManagement.Repositories
         {
             List<tblRoles> _tblRoles = new List<tblRoles>() {
             new tblRoles{Id=1,Roles="Administrator"},
-            new tblRoles {Id=2,Roles="Manager"},
-            new tblRoles{Id=3,Roles="User" }
+            new tblRoles{Id=2,Roles="Manager"},
+            new tblRoles{Id=3,Roles="User" },
+            new tblRoles{Id=4,Roles="Doctor" }
             };
             foreach(var item in _tblRoles)
             {
@@ -48,9 +62,9 @@ namespace HospitalManagement.Repositories
 
             List<tblLogin> _tblLogins = new List<tblLogin>()
             {
-                new tblLogin{Id=1,UserName="Admin",PassWord="Admin123",RoleId=1},
-                new tblLogin{Id=1,UserName="Manager",PassWord="Manager123",RoleId=2},
-                new tblLogin{Id=1,UserName="User",PassWord="User123",RoleId=3}
+                new tblLogin{UserName="Admin",PassWord="Admin123",RoleId=1},
+                new tblLogin{UserName="Manager",PassWord="Manager123",RoleId=2},
+                new tblLogin{UserName="User",PassWord="User123",RoleId=3}
             };
 
             foreach (var item in _tblLogins)
@@ -83,15 +97,17 @@ namespace HospitalManagement.Repositories
             _dbcontext.SaveChanges();
 
             List<tblSubMenu> _submenu = new List<tblSubMenu>() {
-                     new tblSubMenu{Id=1,SubMenu="Index",Controller="Home",Action="Index",MainMenuID=1 },
-                     new tblSubMenu{Id=2,SubMenu="Roles",Controller="Home",Action="Roles",MainMenuID=1 },
-                     new tblSubMenu{Id=3,SubMenu="New Invoice",Controller="Sales",Action="Invoice",MainMenuID=2},
-                     new tblSubMenu{Id=4,SubMenu="Drugs",Controller="Purchase",Action="Drugs",MainMenuID=3},
-                     new tblSubMenu{Id=5,SubMenu="Patient",Controller="Enroll",Action="Patient",MainMenuID=5},
-                     new tblSubMenu{Id=6,SubMenu="Doctor",Controller="Enroll",Action="Doctor",MainMenuID=5},
-                     new tblSubMenu{Id=7,SubMenu="Sepcialist",Controller="Enroll",Action="Sepcialist",MainMenuID=5},
+                     new tblSubMenu{SubMenu="Index",Controller="Home",Action="Index",MainMenuID=1 },
+                      new tblSubMenu{SubMenu="Roles",Controller="Home",Action="Roles",MainMenuID=1 },
+                     new tblSubMenu{SubMenu="New Invoice",Controller="Sales",Action="Invoice",MainMenuID=2},
+                     new tblSubMenu{SubMenu="Drugs",Controller="Purchase",Action="Drugs",MainMenuID=3},
+                     new tblSubMenu{SubMenu="Patient",Controller="Enroll",Action="Patient",MainMenuID=5},
+                     new tblSubMenu{SubMenu="Doctor",Controller="Enroll",Action="Doctor",MainMenuID=5},
+                     new tblSubMenu{SubMenu="Sepcialist",Controller="Enroll",Action="Sepcialist",MainMenuID=5},
+                     new tblSubMenu{SubMenu="Appointment",Controller="Enroll",Action="DoctorAppointment",MainMenuID=5 },
 
             };
+          
             foreach (var item in _submenu)
             {
                 if (_dbcontext.tblSubMenus.ToList().FindAll(x => x.SubMenu == item.SubMenu).Count == 0)

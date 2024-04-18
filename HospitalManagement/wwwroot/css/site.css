@@ -57,10 +57,25 @@ html {
   position: relative;
   min-height: 100%;
 }
-
+.fixed-header {
+    height: 50px;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height*/
+    margin-bottom: 60px;
+    padding-top: 80px; /* Same height as the fixed header */
+}
+/* Set height for the scrollable body */
+.scrollable-body {
+    height: calc(100vh - 50px); /* Subtract the height of the fixed header */
+    overflow-y: auto;
+    padding-top: 15px; /* Optional: Add padding to body content */
 }
 .footer {
   position: absolute;

@@ -1,0 +1,56 @@
+﻿@model List<HospitalManagement.Entities.Appointment>
+<div class="row">
+    <div class="col"><h4>Appointment List</h4></div>
+    <div class="col text-right">
+      
+    </div>
+</div>
+<div class="text-center">
+
+    <label class="text-primary bg-light" id="msg">@ViewBag.msg</label>
+</div>
+<hr />
+<table class="table tab-pane">
+    <thead>
+        <tr>
+            <th>
+                Sl No.
+            </th>
+            <th>
+                Patient
+            </th>
+            <th>
+                Visite Reason
+            </th>
+            <th>
+               Visite Date
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{var x = Model.IndexOf(item) + 1;}
+                    @x
+                </td>
+                <td>
+                    @item.PatientName 
+                </td>
+                <td>
+                    @item.ReasonForVisite 
+                </td>
+                <td>
+                    @item.VisiteDate.ToString("dd-MMM-yyyy hh:mm tt") 
+                </td>
+                <td>
+                    <a class="btn bg-light" href="#">Check</a>
+                </td>
+            </tr>
+            }
+         </tbody> 
+   </table> 

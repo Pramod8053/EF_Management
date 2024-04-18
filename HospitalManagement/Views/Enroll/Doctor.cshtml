@@ -33,6 +33,9 @@
                 Mobile No.
             </th>
             <th>
+                Email
+            </th>
+            <th>
                 Address
             </th>
          
@@ -50,7 +53,7 @@
                     @x
                 </td>
                 <td>
-                    @item.DoctorName 
+                    <lable>Dr.</lable> @item.DoctorName 
                 </td>
                 <td>
                     @item.Age 
@@ -60,6 +63,9 @@
                 </td>
                 <td>
                     @item.Mobile 
+                </td>
+                <td>
+                    @item.Email  
                 </td>
                 <td>
                     @item.Address  
@@ -104,6 +110,10 @@
                         </dd>
                         <dt class="col-sm-3">Mobile No.</dt>
                         <dd class="col-sm-9"><input type="text" id="txt_mobile" name="Mobile" maxlength="10" class="form-control numericInput" required /></dd>
+                       <dt class="col-sm-3">Email</dt>
+                        <dd>
+                            <input type="email" id="txt_email" name="Email" maxlength="100" required />
+                        </dd>
                         <dt class="col-sm-3">Address</dt>
                         <dd class="col-sm-9"><textarea type="text" id="txt_address" name="Address" class="form-control h-100" required></textarea></dd>
                         <!-- Add more terms and descriptions as needed -->
@@ -129,7 +139,7 @@
             $("#SpecialistId").val(data.specialistId);
             $("#txt_address").val(data.address);
             $("#txt_mobile").val(data.mobile);
-
+            $("#txt_email").val(data.email);
         });
     }
 </script>

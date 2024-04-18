@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagement.DBContext
 {
-    public class HMContextt :DbContext
+    public class HMContt :DbContext
     {
         public DbSet<tblRoles> tblRoles { get; set; }
         public DbSet<tblLogin> tblLogins { get; set; }
@@ -20,5 +20,6 @@ namespace HospitalManagement.DBContext
         public DbSet<Specialist> specialists { get; set; }
         public DbSet<Doctor> doctors { get; set; }
         public DbSet<Patient> patients { get; set; }
+        public DbSet<Appointment> appointments { get; set; }
     }
 }

@@ -36,7 +36,14 @@
                     @x
                 </td>
                 <td>
-                    @item.Name
+                    @if (item.DoctorCount > 0)
+                    {
+                        <button class="btn btn-outline-info" onclick='trShow("tr_@item.Id")'>@item.Name</button>
+                    }
+                    else
+                    {
+                        @item.Name
+                    }
                 </td>
                 <td>
                     @item.Qualification
@@ -45,7 +52,52 @@
                     @item.DoctorCount 
                 </td>
             </tr>
-        }
+               if(item.DoctorCount > 0)
+                {
+
+            <tr id="tr_@item.Id" hidden>
+                <td colspan="4">
+                    <table class="table table-bordered">
+                        <thead class="text-center">
+                            <tr>
+                                <th>
+                                    Doctor
+                                </th>
+                                 <th>
+                                    Age
+                                </th>
+                                <th>
+                                    Mobile No.
+                                </th>
+                                <th>
+                                    Address
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var doc in item.List_doctor)
+                                {
+                                    <tr>
+                                        <td>
+                                           <lable>Dr.</lable> @doc.DoctorName  
+                                        </td>
+                                        <td align="center">
+                                            @doc.Age  
+                                        </td>
+                                        <td  align="center">
+                                            @doc.Mobile  
+                                        </td>
+                                        <td>
+                                            @doc.Address  
+                                        </td>
+                                    </tr>
+                                }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            }
+      }
     </tbody>
 </table>
 <!-- Modal -->
@@ -81,3 +133,14 @@
         </div>
     </div>
 </div>
+<script>
+    function trShow(trid) {
+        if ($("#" + trid).is(":visible")) {
+            $("#" + trid).hide();
+          
+        }
+        else {
+            $("#" + trid).removeAttr("hidden").show();
+        }
+    }
+</script>

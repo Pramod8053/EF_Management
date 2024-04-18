@@ -1,2 +1,244 @@
-﻿<h4>Patient</h4>
+﻿@model List<HospitalManagement.Entities.Patient>
+<div class="row">
+    <div class="col"><h4>Patient List</h4></div>
+    <div class="col text-right">
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal">Add New</button>
+    </div>
+</div>
+<div class="text-center">
+    <label class="text-primary bg-light" id="msg">@ViewBag.msg</label>
+</div>
 <hr />
+<table class="table tab-pane">
+    <thead>
+        <tr>
+            <th>
+                Sl No.
+            </th>
+            <th>
+                Patient Name
+            </th>
+            <th>
+                Age
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Mobile No.
+            </th>
+            <th>
+                Address
+            </th>
+
+            <th>
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{var x = Model.IndexOf(item) + 1;}
+                    @x
+                </td>
+                <td>
+                    @item.PatientName
+                </td>
+                <td>
+                    @item.Age
+                </td>
+                <td>
+                    @item.GenderName
+                </td>
+                <td>
+                    @item.Mobile
+                </td>
+                <td>
+                    @item.Address
+                </td>
+
+                <td>
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModal" onclick="GetPatient(@item.Id)">Edit</button>
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#myModalAppointment" onclick="GetPatient(@item.Id)"> Appointment</button>
+                    <button class="btn btn-outline-info" onclick='trShow("tr_@item.Id")'>History</button>
+
+                </td>
+
+            </tr>              if (item.List_Appointment.Count > 0)
+                {
+                   <tr id="tr_@item.Id" hidden>
+                       <td colspan="2"></td>
+                       <td colspan="5" class="text-right" >
+                           <table class="table table-bordered">
+                              <thead>
+                                  <tr>
+                                      <td>Sl.</td>
+                                      <td>Visited on</td>
+                                      <td>Doctor</td>
+                                      <td>Reason</td>
+                                      <td>Status</td>
+                                  </tr>
+                              </thead>
+                               <thead>
+                                   @foreach (var vits in item.List_Appointment)
+                                   {
+                        <tr>
+                            <td>
+                                @{ var n = item.List_Appointment.IndexOf(vits) + 1;}
+                                @n
+                            </td>
+                            <td>
+                                @vits.VisiteDate.ToString("dd-MMM-yyyy hh:mm tt")
+                            </td>
+                            <td>
+                               <label>Dr.</label>@vits.DoctorName  
+                            </td>
+                            <td>
+                                @vits.ReasonForVisite  
+                            </td>
+                            <td>
+                                @if (vits.status == true)
+                        {
+
+
+                            <label class="text-primary">Completed</label>
+                        }
+                        else
+                        {
+                            <label class="bg-light">Processing</label>
+                        }
+                            </td>
+                        </tr>
+                    }
+                               </thead>
+                           </table>
+                       </td>
+                   </tr>
+                }
+        }
+    </tbody>
+</table>
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Patient Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" asp-action="Patient">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="hidden" id="txt_id" name="Id" value="0" />
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9"><input type="text" id="txt_name" name="PatientName" class="form-control" required /></dd>
+                        <dt class="col-sm-3">Age</dt>
+                        <dd class="col-sm-3"><input type="text" id="txt_age" name="Age" maxlength="2" class="form-control w-75 numericInput" required /></dd>
+                        <dt class="col-sm-3">Gender</dt>
+                        <dd class="col-sm-3">
+                            @Html.DropDownList("Gender", new SelectList(ViewBag.Gender, "Id", "Name"), "Select", new { @class = "form-control", @required = "required" })
+
+                        </dd>
+                        <dt class="col-sm-3">Mobile No.</dt>
+                        <dd class="col-sm-9"><input type="text" id="txt_mobile" name="Mobile" maxlength="10" class="form-control numericInput" required /></dd>
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9"><textarea type="text" id="txt_address" name="Address" class="form-control h-100" required></textarea></dd>
+
+                        <!-- Add more terms and descriptions as needed -->
+                    </dl>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Appointment -->
+<div class="modal fade" id="myModalAppointment">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Appointment</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" asp-action="AddAppointment">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="hidden" id="txt_Patientid" name="PatientId" value="0" />
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9"><label class="form-control patientname"></label></dd>
+                        <dt class="col-sm-3">Age</dt>
+                        <dd class="col-sm-3"><label class="form-control age"></label></dd>
+                        <dt class="col-sm-3">Gender</dt>
+                        <dd class="col-sm-3"><label class="form-control gender"></label></dd>
+                        <dt class="col-sm-3">Reason for Visite</dt>
+                        <dd class="col-sm-9">
+                            <textarea name="ReasonForVisite" class="form-control h-100"></textarea>
+                        </dd>
+                        <dt class="col-sm-3">Specialist</dt>
+                        <dd class="col-sm-9">@Html.DropDownList("SpecialistID", new SelectList(ViewBag.Specialists, "Id", "Name"), "Select", new { @class = "form-control", @required = "required" }) </dd>
+                        <dt class="col-sm-3">Doctor</dt>
+                        <dd class="col-sm-9">@Html.DropDownList("DoctorId", new SelectList(""), "Select", new { @class = "form-control", @required = "required" })</dd>
+
+                        <!-- Add more terms and descriptions as needed -->
+                    </dl>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Appointment</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function GetPatient(id) {
+        $.post("GetPatientByID", { ID: id }, function (data) {
+            $("#txt_id").val(data.id);
+            $("#txt_name").val(data.patientName);
+            $("#txt_age").val(data.age);
+            $("#Gender").val(data.gender);
+            $("#txt_address").val(data.address);
+            $("#txt_mobile").val(data.mobile);
+
+            $("#txt_Patientid").val(data.id);
+            $(".patientname").text(data.patientName);
+            $(".age").text(data.age);
+            $(".gender").text(data.genderName);
+        });
+    }
+    $("#SpecialistID").change(function () {
+        var id = $(this).val();
+        $("#DoctorId").empty().append("<option>Select doctor</option>");
+        $.post("GetDoctorByprofession", { Id: id }, function (data) {
+            $.each(data, function (i,vl) {
+                $("#DoctorId").append("<option value="+ vl.id +"> Dr." + vl.doctorName +"</option>");
+            });
+        });
+    });
+    function trShow(trid) {
+        if ($("#" + trid).is(":visible")) {
+            $("#" + trid).hide();
+
+        }
+        else {
+            $("#" + trid).removeAttr("hidden").show();
+        }
+    }
+</script>
